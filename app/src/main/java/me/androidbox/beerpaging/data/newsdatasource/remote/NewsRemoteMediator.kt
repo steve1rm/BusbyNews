@@ -37,7 +37,7 @@ class NewsRemoteMediator(
             }
 
             val newsDto = newsApi.getHeedLines(
-                pageSize = 5,
+                pageSize = 10,
                 page = page,
                 country = "us",
                 apiKey = "d96c3612442342fc8295fcdf3184970b")
