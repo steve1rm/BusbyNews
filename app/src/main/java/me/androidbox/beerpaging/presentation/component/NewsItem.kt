@@ -1,8 +1,10 @@
 package me.androidbox.beerpaging.presentation.component
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -47,7 +49,7 @@ fun NewsItem(
         mutableStateOf(false)
     }
 
-    var showMoreTitle by remember {
+    var showMoreTitleClicked by remember {
         mutableStateOf(false)
     }
 
@@ -55,7 +57,11 @@ fun NewsItem(
         mutableStateOf(false)
     }
 
-    var showMoreDescription by remember {
+    var showMoreDescriptionClicked by remember {
+        mutableStateOf(false)
+    }
+
+    var shouldShowMoreDescription by remember {
         mutableStateOf(false)
     }
 
@@ -105,35 +111,50 @@ fun NewsItem(
                             .fillMaxHeight()
                 ) {
                     Text(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateContentSize(),
                             text = articleModel.title,
-                            maxLines = if(showMoreTitle) Int.MAX_VALUE else 1,
+                            maxLines = if (showMoreTitleClicked) Int.MAX_VALUE else 1,
                             overflow = TextOverflow.Ellipsis,
                             onTextLayout = { textLayoutResult ->
                                 shouldShowMoreTitle = textLayoutResult.isLineEllipsized(0) || textLayoutResult.lineCount > 1
                             }
                     )
 
-                    if(shouldShowMoreTitle) {
-                        TextButton(onClick = {
-                            showMoreTitle = !showMoreTitle
-                            shouldShowMoreTitle = true
-                        }) {
-                            Text(text = if (showMoreTitle) "Show less" else "Show more")
+                    if (shouldShowMoreTitle) {
+                        TextButton(
+                                modifier = Modifier.align(Alignment.End),
+                                contentPadding = PaddingValues(0.dp),
+                                onClick = {
+                                    showMoreTitleClicked = !showMoreTitleClicked
+                                }) {
+                            Text(text = if (showMoreTitleClicked) "Show less" else "Show more")
                         }
                     }
+
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                                .fillMaxWidth()
+                                .animateContentSize(),
                         text = articleModel.description,
-                        maxLines = if(showMoreDescription) Int.MAX_VALUE else 5,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    TextButton(onClick = {
-                        showMoreDescription = !showMoreDescription
-                    }) {
-                        Text(text = if(showMoreDescription) "Show less" else "Show more" )
+                        maxLines = if(showMoreDescriptionClicked) Int.MAX_VALUE else 5,
+                        overflow = TextOverflow.Ellipsis,
+                            onTextLayout = { textLayoutResult ->
+                                shouldShowMoreDescription = textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 5
+                            })
+
+                    if(shouldShowMoreDescription) {
+                        TextButton(
+                                modifier = Modifier.align(Alignment.End),
+                                contentPadding = PaddingValues(horizontal = 0.dp),
+                                onClick = {
+                                    showMoreDescriptionClicked = !showMoreDescriptionClicked
+                                }) {
+                            Text(text = if (showMoreDescriptionClicked) "Show less" else "Show more")
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
