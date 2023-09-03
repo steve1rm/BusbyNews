@@ -1,6 +1,9 @@
 package me.androidbox.beerpaging.presentation.component
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -107,8 +111,7 @@ fun NewsItem(
                     .weight(3F)) {
                 Column(
                     modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
+                            .fillMaxSize()
                 ) {
                     Text(
                             modifier = Modifier
@@ -119,8 +122,7 @@ fun NewsItem(
                             overflow = TextOverflow.Ellipsis,
                             onTextLayout = { textLayoutResult ->
                                 shouldShowMoreTitle = textLayoutResult.isLineEllipsized(0) || textLayoutResult.lineCount > 1
-                            }
-                    )
+                            })
 
                     if (shouldShowMoreTitle) {
                         TextButton(
@@ -133,15 +135,16 @@ fun NewsItem(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
-
                     Text(
-                        modifier = Modifier
-                                .fillMaxWidth()
-                                .animateContentSize(),
-                        text = articleModel.description,
-                        maxLines = if(showMoreDescriptionClicked) Int.MAX_VALUE else 5,
-                        overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateContentSize(
+                                            animationSpec = spring(
+                                                    dampingRatio = Spring.DampingRatioLowBouncy,
+                                                    stiffness = Spring.StiffnessLow)),
+                            text = articleModel.description,
+                            maxLines = if(showMoreDescriptionClicked) Int.MAX_VALUE else 5,
+                            overflow = TextOverflow.Ellipsis,
                             onTextLayout = { textLayoutResult ->
                                 shouldShowMoreDescription = textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 5
                             })
@@ -157,35 +160,28 @@ fun NewsItem(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = articleModel.author
-                    )
+                        text = articleModel.author)
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = articleModel.sourceName
-                    )
+                        text = articleModel.sourceName)
 
                     Column(modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight(),
+                            .fillMaxSize(),
                             verticalArrangement = Arrangement.Bottom) {
                         Text(
                                 modifier = Modifier
-                                        .fillMaxHeight()
-                                        .fillMaxWidth(),
+                                        .fillMaxSize(),
                                 text = ZonedDateTime.parse(articleModel.publishedAt).toLocalDate().toString(),
-                                textAlign = TextAlign.End
-                        )
-
+                                textAlign = TextAlign.End)
                     }
                 }
-
             }
         }
     }
