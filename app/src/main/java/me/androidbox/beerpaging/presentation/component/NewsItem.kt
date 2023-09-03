@@ -1,13 +1,15 @@
 package me.androidbox.beerpaging.presentation.component
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -31,6 +33,8 @@ import coil.compose.AsyncImage
 import me.androidbox.beerpaging.R
 import me.androidbox.beerpaging.domain.ArticleModel
 import me.androidbox.beerpaging.presentation.theme.BeerPagingTheme
+import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import kotlin.random.Random
 
 @Composable
@@ -44,20 +48,23 @@ fun NewsItem(
     }
 
     Card(
-        modifier = modifier
+        modifier = modifier,
     ) {
         Row(modifier = Modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Max)) {
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(end = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)) {
 
             Box(modifier = Modifier
-                .weight(1F)
-                .wrapContentHeight()
-                .clip(RoundedCornerShape(8.dp))) {
+                    .weight(1F)
+                    .clip(RoundedCornerShape(8.dp))) {
 
                 AsyncImage(
                     error = painterResource(id = R.drawable.back_soon),
-                    modifier = Modifier.aspectRatio(2F / 5F, true),
+                    modifier = Modifier
+                            .aspectRatio(2F / 5F, false)
+                            .fillMaxHeight(),
                     onLoading = {
                         shouldShowProgress = true
                     },
@@ -77,41 +84,61 @@ fun NewsItem(
                 }
             }
 
-            Column(
-                modifier = Modifier.weight(3F)
-            ) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = articleModel.title,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+            Column(modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(3F)) {
+                Column(
+                    modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight()
+                ) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = articleModel.title,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = articleModel.description,
-                    maxLines = 5,
-                    overflow = TextOverflow.Ellipsis)
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = articleModel.description,
+                        maxLines = 5,
+                        overflow = TextOverflow.Ellipsis
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                Text(modifier = Modifier.fillMaxWidth(),
-                    text = articleModel.author)
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = articleModel.author
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = articleModel.sourceName)
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = articleModel.sourceName
+                    )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Column(modifier = Modifier
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                            verticalArrangement = Arrangement.Bottom) {
+                        Text(
+                                modifier = Modifier
+                                        .fillMaxHeight()
+                                        .fillMaxWidth(),
+                                text = ZonedDateTime.parse(articleModel.publishedAt).toLocalDate().toString(),
+                                textAlign = TextAlign.End
+                        )
 
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = articleModel.publishedAt,
-                    textAlign = TextAlign.End)
+                    }
+
+//                    Spacer(modifier = Modifier.height(8.dp))
+                }
+
             }
         }
     }
@@ -121,6 +148,9 @@ fun NewsItem(
 @Composable
 fun PreviewNewsItem() {
     BeerPagingTheme {
+
+        val date = LocalDateTime.parse("2023-08-25T10:32:00Z").toLocalDate()
+
         NewsItem(articleModel = ArticleModel(
             id = Random.nextInt(),
             author = "Michelle Watson",
