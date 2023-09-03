@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +34,6 @@ import coil.compose.AsyncImage
 import me.androidbox.beerpaging.R
 import me.androidbox.beerpaging.domain.ArticleModel
 import me.androidbox.beerpaging.presentation.theme.BeerPagingTheme
-import java.time.LocalDateTime
 import java.time.ZonedDateTime
 import kotlin.random.Random
 
@@ -44,6 +44,18 @@ fun NewsItem(
 ) {
 
     var shouldShowProgress by remember {
+        mutableStateOf(false)
+    }
+
+    var showMoreTitle by remember {
+        mutableStateOf(false)
+    }
+
+    var shouldShowMoreTitle by remember {
+        mutableStateOf(false)
+    }
+
+    var showMoreDescription by remember {
         mutableStateOf(false)
     }
 
@@ -93,20 +105,36 @@ fun NewsItem(
                             .fillMaxHeight()
                 ) {
                     Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = articleModel.title,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                            modifier = Modifier.fillMaxWidth(),
+                            text = articleModel.title,
+                            maxLines = if(showMoreTitle) Int.MAX_VALUE else 1,
+                            overflow = TextOverflow.Ellipsis,
+                            onTextLayout = { textLayoutResult ->
+                                shouldShowMoreTitle = textLayoutResult.isLineEllipsized(0) || textLayoutResult.lineCount > 1
+                            }
                     )
 
+                    if(shouldShowMoreTitle) {
+                        TextButton(onClick = {
+                            showMoreTitle = !showMoreTitle
+                            shouldShowMoreTitle = true
+                        }) {
+                            Text(text = if (showMoreTitle) "Show less" else "Show more")
+                        }
+                    }
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = articleModel.description,
-                        maxLines = 5,
+                        maxLines = if(showMoreDescription) Int.MAX_VALUE else 5,
                         overflow = TextOverflow.Ellipsis
                     )
+                    TextButton(onClick = {
+                        showMoreDescription = !showMoreDescription
+                    }) {
+                        Text(text = if(showMoreDescription) "Show less" else "Show more" )
+                    }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -135,8 +163,6 @@ fun NewsItem(
                         )
 
                     }
-
-//                    Spacer(modifier = Modifier.height(8.dp))
                 }
 
             }
@@ -148,9 +174,6 @@ fun NewsItem(
 @Composable
 fun PreviewNewsItem() {
     BeerPagingTheme {
-
-        val date = LocalDateTime.parse("2023-08-25T10:32:00Z").toLocalDate()
-
         NewsItem(articleModel = ArticleModel(
             id = Random.nextInt(),
             author = "Michelle Watson",
