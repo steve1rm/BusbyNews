@@ -128,7 +128,7 @@ fun NewsItem(
                         maxLines = if (showMoreTitleClicked) Int.MAX_VALUE else 1,
                         overflow = TextOverflow.Ellipsis,
                         onTextLayout = { textLayoutResult ->
-                            shouldShowMoreTitle = textLayoutResult.isLineEllipsized(0) || textLayoutResult.lineCount > 1
+                            shouldShowMoreTitle = textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 1
                         })
 
                     if (shouldShowMoreTitle) {

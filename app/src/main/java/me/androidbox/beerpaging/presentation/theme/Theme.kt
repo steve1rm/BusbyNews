@@ -10,31 +10,84 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    /* Primary */
+    primary = Green80,
+    onPrimary = Green20,
+    onPrimaryContainer = Green90,
+    inversePrimary = Green40,
+
+    /* Secondary */
+    secondary = DarkGreen80,
+    onSecondary = DarkGreen20,
+    secondaryContainer = DarkGreen30,
+    onSecondaryContainer = DarkGreen90,
+
+    /* Accents */
+    tertiary = Violet80,
+    onTertiary = Violet20,
+    tertiaryContainer = Violet30,
+    onTertiaryContainer = Violet90,
+
+    /* Error */
+    error = Red80,
+    onError = Red20,
+    errorContainer = Red30,
+    onErrorContainer = Red90,
+
+    /* Background */
+    background = Grey10,
+    onBackground = Grey90,
+    surface = GreenGrey30,
+    onSurface = GreenGrey80,
+    inverseSurface = Grey90,
+    inverseOnSurface = Grey10,
+    surfaceVariant = GreenGrey30,
+    onSurfaceVariant = GreenGrey80,
+    outline = GreenGrey80
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    /* Primary */
+    primary = Green40,
     onPrimary = Color.White,
+    onPrimaryContainer = Green10,
+    inversePrimary = Green80,
+
+    /* Secondary */
+    secondary = DarkGreen40,
     onSecondary = Color.White,
+    secondaryContainer = DarkGreen90,
+    onSecondaryContainer = DarkGreen10,
+
+    /* Accents */
+    tertiary = Violet40,
     onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    tertiaryContainer = Violet90,
+    onTertiaryContainer = Violet10,
+
+    /* Error */
+    error = Red40,
+    onError = Color.White,
+    errorContainer = Red90,
+    onErrorContainer = Red10,
+
+    /* Background */
+    background = Grey10,
+    onBackground = Grey90,
+    surface = GreenGrey30,
+    onSurface = GreenGrey80,
+    inverseSurface = Grey90,
+    inverseOnSurface = Grey10,
+    surfaceVariant = GreenGrey30,
+    onSurfaceVariant = GreenGrey80,
+    outline = GreenGrey80
 )
 
 @Composable
