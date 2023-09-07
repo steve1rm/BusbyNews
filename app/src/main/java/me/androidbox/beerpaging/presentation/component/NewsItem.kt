@@ -79,20 +79,20 @@ fun NewsItem(
         modifier = modifier,
     ) {
         Row(modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(end = 8.dp),
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .padding(end = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)) {
 
             Box(modifier = Modifier
-                    .weight(1F)
-                    .clip(RoundedCornerShape(8.dp))) {
+                .weight(1F)
+                .clip(RoundedCornerShape(8.dp))) {
 
                 AsyncImage(
                     error = painterResource(id = R.drawable.back_soon),
                     modifier = Modifier
-                            .aspectRatio(2F / 5F, false)
-                            .fillMaxHeight(),
+                        .aspectRatio(2F / 5F, false)
+                        .fillMaxHeight(),
                     onLoading = {
                         shouldShowProgress = true
                     },
@@ -113,11 +113,11 @@ fun NewsItem(
             }
 
             Column(modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(3F)) {
+                .fillMaxHeight()
+                .weight(3F)) {
                 Column(
                     modifier = Modifier
-                            .fillMaxSize()
+                        .fillMaxSize()
                 ) {
                     Text(
                         modifier = Modifier
@@ -133,12 +133,13 @@ fun NewsItem(
 
                     if (shouldShowMoreTitle) {
                         TextButton(
-                                modifier = Modifier.align(Alignment.End),
-                                contentPadding = PaddingValues(0.dp),
-                                onClick = {
-                                    showMoreTitleClicked = !showMoreTitleClicked
-                                }) {
-                            Text(text = if (showMoreTitleClicked) "Show less" else "Show more")
+                            modifier = Modifier.align(Alignment.End),
+                            contentPadding = PaddingValues(0.dp),
+                            onClick = {
+                                showMoreTitleClicked = !showMoreTitleClicked
+                            }) {
+                            Text(text = if (showMoreTitleClicked) "Show less" else "Show more",
+                                style = MaterialTheme.typography.labelLarge)
                         }
                     }
 
@@ -149,7 +150,7 @@ fun NewsItem(
                                 animationSpec = spring(
                                     dampingRatio = Spring.DampingRatioLowBouncy,
                                     stiffness = Spring.StiffnessLow)),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.bodyLarge,
                         text = articleModel.description,
                         maxLines = if(showMoreDescriptionClicked) Int.MAX_VALUE else 5,
                         overflow = TextOverflow.Ellipsis,
@@ -159,12 +160,13 @@ fun NewsItem(
 
                     if(shouldShowMoreDescription) {
                         TextButton(
-                                modifier = Modifier.align(Alignment.End),
-                                contentPadding = PaddingValues(horizontal = 0.dp),
-                                onClick = {
-                                    showMoreDescriptionClicked = !showMoreDescriptionClicked
-                                }) {
-                            Text(text = if (showMoreDescriptionClicked) "Show less" else "Show more")
+                            modifier = Modifier.align(Alignment.End),
+                            contentPadding = PaddingValues(horizontal = 0.dp),
+                            onClick = {
+                                showMoreDescriptionClicked = !showMoreDescriptionClicked
+                            }) {
+                            Text(text = if (showMoreDescriptionClicked) "Show less" else "Show more",
+                                style = MaterialTheme.typography.labelLarge)
                         }
                     }
 
@@ -172,22 +174,25 @@ fun NewsItem(
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
+                        style = MaterialTheme.typography.labelLarge,
                         text = articleModel.author)
 
                     Spacer(modifier = Modifier.height(4.dp))
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
+                        style = MaterialTheme.typography.labelLarge,
                         text = articleModel.sourceName)
 
                     Column(modifier = Modifier
-                            .fillMaxSize(),
-                            verticalArrangement = Arrangement.Bottom) {
+                        .fillMaxSize(),
+                        verticalArrangement = Arrangement.Bottom) {
                         Text(
-                                modifier = Modifier
-                                        .fillMaxSize(),
-                                text = ZonedDateTime.parse(articleModel.publishedAt).toLocalDate().toString(),
-                                textAlign = TextAlign.End)
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            text = ZonedDateTime.parse(articleModel.publishedAt).toLocalDate().toString(),
+                            style = MaterialTheme.typography.labelMedium,
+                            textAlign = TextAlign.End)
                     }
                 }
             }

@@ -42,7 +42,7 @@ val Typography = Typography(
     ),
     displaySmall = TextStyle(
         fontFamily = interFont,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
         fontSize = 36.sp,
         lineHeight = 44.sp,
         letterSpacing = 0.sp
@@ -91,7 +91,7 @@ val Typography = Typography(
     ),
     bodyLarge = TextStyle(
         fontFamily = interFont,
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.Medium,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.15.sp
