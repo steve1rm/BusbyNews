@@ -5,9 +5,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.TopAppBarDefaults.enterAlwaysScrollBehavior
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -21,6 +25,7 @@ import me.androidbox.beerpaging.presentation.viewmodel.NewsViewModel
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -29,11 +34,18 @@ class MainActivity : ComponentActivity() {
 
             BeerPagingTheme {
                 // A surface container using the 'background' color from the theme
+                val scrollBehavior = enterAlwaysScrollBehavior()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NewsScreen(newsPagingData = newsHeadLines)
+                    NewsScreen(
+                        newsPagingData = newsHeadLines,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .nestedScroll(connection = scrollBehavior.nestedScrollConnection),
+                        topAppBarScrollBehavior = scrollBehavior
+                    )
                 }
             }
         }
