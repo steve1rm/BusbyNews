@@ -45,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import me.androidbox.beerpaging.R
 import me.androidbox.beerpaging.domain.ArticleModel
+import me.androidbox.beerpaging.presentation.screen.NewsItemEvent
+import me.androidbox.beerpaging.presentation.screen.NewsItemState
 import me.androidbox.beerpaging.presentation.theme.BeerPagingTheme
 import java.time.ZonedDateTime
 import kotlin.random.Random
@@ -53,12 +55,16 @@ import kotlin.random.Random
 fun NewsItem(
     modifier: Modifier = Modifier,
     articleModel: ArticleModel,
-    onNewsLinkClicked: (newsLink: String) -> Unit
+    onNewsLinkClicked: (newsLink: String) -> Unit,
+    newsItemEvent: (NewsItemEvent) -> Unit,
+    newsItemState: NewsItemState
 ) {
 
+/*
     var shouldShowProgress by remember {
         mutableStateOf(false)
     }
+*/
 
     var showMoreTitleClicked by remember {
         mutableStateOf(false)
@@ -98,19 +104,19 @@ fun NewsItem(
                         .aspectRatio(2F / 5F, false)
                         .fillMaxHeight(),
                     onLoading = {
-                        shouldShowProgress = true
+                        newsItemEvent(NewsItemEvent.OnProgressUpdated(shouldShow = true))
                     },
                     onSuccess = {
-                        shouldShowProgress = false
+                        newsItemEvent(NewsItemEvent.OnProgressUpdated(shouldShow = false))
                     },
                     onError = {
-                        shouldShowProgress = false
+                        newsItemEvent(NewsItemEvent.OnProgressUpdated(shouldShow = false))
                     },
                     model = articleModel.urlToImage,
                     contentDescription = null,
                     contentScale = ContentScale.Crop)
 
-                if (shouldShowProgress) {
+                if (newsItemState.shouldShowProgress) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center))
                 }
@@ -240,6 +246,8 @@ fun PreviewNewsItem() {
             sourceName = "CNN",
             sourceId = "CNN source Id"
         ),
-            onNewsLinkClicked = ::print)
+            onNewsLinkClicked = ::print,
+            newsItemEvent = {},
+            newsItemState = NewsItemState())
     }
 }

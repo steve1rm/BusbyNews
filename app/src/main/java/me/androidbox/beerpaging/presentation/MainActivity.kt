@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults.enterAlwaysScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +51,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val newsViewModel: NewsViewModel = hiltViewModel()
             val newsHeadLines = newsViewModel.newsPager.collectAsLazyPagingItems()
+            val newsItemState by newsViewModel.newsItemState.collectAsState()
 
             BeerPagingTheme(
                 darkTheme = newsApplication.isDarkMode
@@ -74,7 +76,9 @@ class MainActivity : ComponentActivity() {
                             onNewsLinkedClicked = { newsLink ->
                                 newsLinkState = newsLink
                             },
-                            application = newsApplication
+                            application = newsApplication,
+                            newsItemState = newsItemState,
+                            newsItemEvent = newsViewModel::onNewsItemEvent
                         )
                     }
                     else {
