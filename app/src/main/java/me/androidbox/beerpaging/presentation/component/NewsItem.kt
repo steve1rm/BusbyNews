@@ -3,7 +3,6 @@ package me.androidbox.beerpaging.presentation.component
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,7 +37,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -119,101 +117,108 @@ fun NewsItem(
             }
 
             Column(modifier = Modifier
-                .fillMaxHeight()
-                .weight(3F)) {
-                Column(
+                .weight(3F)
+                .fillMaxHeight(),
+                verticalArrangement = Arrangement.Bottom)
+            {
+                Text(
                     modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateContentSize(),
-                        style = MaterialTheme.typography.titleMedium,
-                        text = articleModel.title,
-                        maxLines = if (showMoreTitleClicked) Int.MAX_VALUE else 1,
-                        overflow = TextOverflow.Ellipsis,
-                        onTextLayout = { textLayoutResult ->
-                            shouldShowMoreTitle = textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 1
-                        })
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    style = MaterialTheme.typography.titleMedium,
+                    text = articleModel.title,
+                    maxLines = if (showMoreTitleClicked) Int.MAX_VALUE else 1,
+                    overflow = TextOverflow.Ellipsis,
+                    onTextLayout = { textLayoutResult ->
+                        shouldShowMoreTitle =
+                            textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 1
+                    })
 
-                    if (shouldShowMoreTitle) {
-                        TextButton(
-                            modifier = Modifier.align(Alignment.End),
-                            contentPadding = PaddingValues(0.dp),
-                            onClick = {
-                                showMoreTitleClicked = !showMoreTitleClicked
-                            }) {
-                            Text(text = if (showMoreTitleClicked) "Show less" else "Show more",
-                                style = MaterialTheme.typography.labelLarge)
-                        }
-                    }
-
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateContentSize(
-                                animationSpec = spring(
-                                    dampingRatio = Spring.DampingRatioLowBouncy,
-                                    stiffness = Spring.StiffnessLow
-                                )
-                            ),
-                        style = MaterialTheme.typography.bodyLarge,
-                        text = articleModel.description,
-                        maxLines = if(showMoreDescriptionClicked) Int.MAX_VALUE else 5,
-                        overflow = TextOverflow.Ellipsis,
-                        onTextLayout = { textLayoutResult ->
-                            shouldShowMoreDescription = textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 5
-                        })
-
-                    if(shouldShowMoreDescription) {
-                        TextButton(
-                            modifier = Modifier.align(Alignment.End),
-                            contentPadding = PaddingValues(horizontal = 0.dp),
-                            onClick = {
-                                showMoreDescriptionClicked = !showMoreDescriptionClicked
-                            }) {
-                            Text(text = if (showMoreDescriptionClicked) "Show less" else "Show more",
-                                style = MaterialTheme.typography.labelLarge)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    if (articleModel.author.startsWith("https://")) {
-                        ClickableText(
-                            style = MaterialTheme.typography.labelLarge,
-                            text = AnnotatedString(text = articleModel.author, spanStyle = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)),
-                            onClick = {
-                                onNewsLinkClicked(articleModel.author)
-                            })
-                    }
-                    else {
+                if (shouldShowMoreTitle) {
+                    TextButton(
+                        modifier = Modifier.align(Alignment.End),
+                        contentPadding = PaddingValues(0.dp),
+                        onClick = {
+                            showMoreTitleClicked = !showMoreTitleClicked
+                        }) {
                         Text(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            style = MaterialTheme.typography.labelLarge,
-                            text = articleModel.author)
-                    }
-
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        style = MaterialTheme.typography.labelLarge,
-                        text = articleModel.sourceName)
-
-                    Column(modifier = Modifier
-                        .fillMaxSize(),
-                        verticalArrangement = Arrangement.Bottom) {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            text = ZonedDateTime.parse(articleModel.publishedAt).toLocalDate().toString(),
-                            style = MaterialTheme.typography.labelMedium,
-                            textAlign = TextAlign.End)
+                            text = if (showMoreTitleClicked) "Show less" else "Show more",
+                            style = MaterialTheme.typography.labelLarge
+                        )
                     }
                 }
+
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioLowBouncy,
+                                stiffness = Spring.StiffnessLow
+                            )
+                        ),
+                    style = MaterialTheme.typography.bodyLarge,
+                    text = articleModel.description,
+                    maxLines = if (showMoreDescriptionClicked) Int.MAX_VALUE else 5,
+                    overflow = TextOverflow.Ellipsis,
+                    onTextLayout = { textLayoutResult ->
+                        shouldShowMoreDescription =
+                            textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 5
+                    })
+
+                if (shouldShowMoreDescription) {
+                    TextButton(
+                        modifier = Modifier.align(Alignment.End),
+                        contentPadding = PaddingValues(horizontal = 0.dp),
+                        onClick = {
+                            showMoreDescriptionClicked = !showMoreDescriptionClicked
+                        }) {
+                        Text(
+                            text = if (showMoreDescriptionClicked) "Show less" else "Show more",
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                if (articleModel.author.startsWith("https://")) {
+                    ClickableText(
+                        style = MaterialTheme.typography.labelLarge,
+                        text = AnnotatedString(
+                            text = articleModel.author,
+                            spanStyle = SpanStyle(
+                                color = Color.Blue,
+                                textDecoration = TextDecoration.Underline
+                            )
+                        ),
+                        onClick = {
+                            onNewsLinkClicked(articleModel.author)
+                        })
+                } else {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        style = MaterialTheme.typography.labelLarge,
+                        text = articleModel.author
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    style = MaterialTheme.typography.labelLarge,
+                    text = articleModel.sourceName
+                )
+
+                Text(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    text = ZonedDateTime.parse(articleModel.publishedAt).toLocalDate().toString(),
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.End
+                )
             }
         }
     }
