@@ -6,6 +6,7 @@ import android.webkit.WebView
 import android.widget.FrameLayout.LayoutParams
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
@@ -39,14 +40,20 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @Inject
+    lateinit var newsApplication: NewsApplication
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             val newsViewModel: NewsViewModel = hiltViewModel()
             val newsHeadLines = newsViewModel.newsPager.collectAsLazyPagingItems()
 
-            BeerPagingTheme {
+            BeerPagingTheme(
+                darkTheme = newsApplication.isDarkMode
+            ) {
                 // A surface container using the 'background' color from the theme
                 val scrollBehavior = enterAlwaysScrollBehavior()
                 var newsLinkState by remember {
@@ -66,7 +73,8 @@ class MainActivity : ComponentActivity() {
                             topAppBarScrollBehavior = scrollBehavior,
                             onNewsLinkedClicked = { newsLink ->
                                 newsLinkState = newsLink
-                            }
+                            },
+                            application = newsApplication
                         )
                     }
                     else {

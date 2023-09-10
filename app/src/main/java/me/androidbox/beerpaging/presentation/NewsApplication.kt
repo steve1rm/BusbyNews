@@ -8,7 +8,8 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class NewsApplication : Application() {
-    private var isDarkMode by mutableStateOf(false)
+    var isDarkMode by mutableStateOf(false)
+        private set
 
     fun toggleDarkThemeOff() {
         isDarkMode = !isDarkMode

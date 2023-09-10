@@ -92,8 +92,8 @@ fun interface AppModule {
 
         @Provides
         @Singleton
-        fun provideApplicationContext(@ApplicationContext applicationContext: ApplicationContext): ApplicationContext {
-            return applicationContext as ApplicationContext
+        fun provideApplicationContext(@ApplicationContext applicationContext: Context): NewsApplication {
+            return applicationContext as NewsApplication
         }
     }
 }

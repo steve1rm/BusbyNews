@@ -26,6 +26,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import me.androidbox.beerpaging.domain.ArticleModel
+import me.androidbox.beerpaging.presentation.NewsApplication
 import me.androidbox.beerpaging.presentation.component.NewsItem
 import me.androidbox.beerpaging.presentation.theme.BeerPagingTheme
 
@@ -43,7 +48,8 @@ fun NewsScreen(
         newsPagingData: LazyPagingItems<ArticleModel>,
         modifier: Modifier = Modifier,
         topAppBarScrollBehavior: TopAppBarScrollBehavior,
-        onNewsLinkedClicked: (newsLink: String) -> Unit
+        onNewsLinkedClicked: (newsLink: String) -> Unit,
+        application: NewsApplication
 ) {
 
     val context = LocalContext.current
@@ -58,6 +64,10 @@ fun NewsScreen(
         }
     }
 
+    var isDarkModeState by remember {
+        mutableStateOf(application.isDarkMode)
+    }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -70,14 +80,21 @@ fun NewsScreen(
                     titleContentColor = MaterialTheme.colorScheme.onSurfaceVariant),
                 navigationIcon = {
                     IconButton(onClick = {
-     //                   applicationContext.toggleDarkThemeOff()
                     }) {
                         Icon(imageVector =  Icons.Default.ExitToApp, contentDescription = null)
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(imageVector = if(isSystemInDarkTheme()) Icons.Default.Brightness2 else Icons.Default.Brightness5, contentDescription = null)
+                    IconButton(onClick = {
+                        application.toggleDarkThemeOff()
+                        isDarkModeState = application.isDarkMode
+
+                    }) {
+                        Icon(imageVector = if(isDarkModeState)
+                            Icons.Default.Brightness5
+                        else
+                            Icons.Default.Brightness2,
+                            contentDescription = null)
                     }
                 })
         }
