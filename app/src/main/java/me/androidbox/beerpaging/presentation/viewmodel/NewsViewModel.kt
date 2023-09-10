@@ -14,6 +14,8 @@ import me.androidbox.beerpaging.data.newsdatasource.local.entity.ArticleEntity
 import me.androidbox.beerpaging.data.newsdatasource.mapper.toArticleModel
 import me.androidbox.beerpaging.presentation.screen.NewsItemEvent
 import me.androidbox.beerpaging.presentation.screen.NewsItemState
+import me.androidbox.beerpaging.presentation.screen.shouldMoreText
+import me.androidbox.beerpaging.presentation.screen.textUpdate
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,12 +40,36 @@ class NewsViewModel @Inject constructor(
             is NewsItemEvent.OnProgressUpdated -> {
                 _newsItemState.update { newsItemState ->
                     newsItemState.copy(
-                        shouldShowProgress = newsItemEvent.shouldShow
+                        shouldShowProgress = newsItemEvent.shouldShowProgress
                     )
                 }
             }
-            is NewsItemEvent.OnShowMoreTitleClicked -> {
 
+            is NewsItemEvent.OnShowMoreTitleTextClicked -> {
+                _newsItemState.update { newsItemState ->
+                    val showMoreOrLessTitleText = newsItemState.showMoreOrLessTitleText.copy(
+                        text = newsItemEvent.showMoreOrLessTitleText.text,
+                        shouldShowMoreTitle = newsItemEvent.showMoreOrLessTitleText.shouldShowMoreTitle,
+                        lineCount = newsItemEvent.showMoreOrLessTitleText.lineCount,
+                        hasTextOverflow = newsItemEvent.showMoreOrLessTitleText.hasTextOverflow
+                    )
+                    newsItemState.showMoreOrLessTitleText.shouldMoreText()
+                    newsItemState.showMoreOrLessTitleText.textUpdate()
+
+                    newsItemState.copy(
+                        showMoreOrLessTitleText = showMoreOrLessTitleText
+                    )
+                }
+            }
+
+            is NewsItemEvent.OnShowMoreTitleClicked -> {
+/*
+                _newsItemState.update { newsItemState ->
+                    newsItemState.copy(
+                        shouldShowMoreTitle = newsItemState.shouldShowMoreTitle
+                    )
+                }
+*/
             }
         }
     }

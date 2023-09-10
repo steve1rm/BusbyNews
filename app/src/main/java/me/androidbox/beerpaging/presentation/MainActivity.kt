@@ -78,7 +78,9 @@ class MainActivity : ComponentActivity() {
                             },
                             application = newsApplication,
                             newsItemState = newsItemState,
-                            newsItemEvent = newsViewModel::onNewsItemEvent
+                            newsItemEvent = { newsItemEvent ->
+                                newsViewModel.onNewsItemEvent(newsItemEvent)
+                            }
                         )
                     }
                     else {

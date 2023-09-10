@@ -47,6 +47,8 @@ import me.androidbox.beerpaging.R
 import me.androidbox.beerpaging.domain.ArticleModel
 import me.androidbox.beerpaging.presentation.screen.NewsItemEvent
 import me.androidbox.beerpaging.presentation.screen.NewsItemState
+import me.androidbox.beerpaging.presentation.screen.ShowMoreOrLessTitleText
+import me.androidbox.beerpaging.presentation.screen.shouldMoreText
 import me.androidbox.beerpaging.presentation.theme.BeerPagingTheme
 import java.time.ZonedDateTime
 import kotlin.random.Random
@@ -65,14 +67,17 @@ fun NewsItem(
         mutableStateOf(false)
     }
 */
-
+/*
     var showMoreTitleClicked by remember {
         mutableStateOf(false)
     }
+*/
 
+/*
     var shouldShowMoreTitle by remember {
         mutableStateOf(false)
     }
+*/
 
     var showMoreDescriptionClicked by remember {
         mutableStateOf(false)
@@ -104,13 +109,13 @@ fun NewsItem(
                         .aspectRatio(2F / 5F, false)
                         .fillMaxHeight(),
                     onLoading = {
-                        newsItemEvent(NewsItemEvent.OnProgressUpdated(shouldShow = true))
+                        newsItemEvent(NewsItemEvent.OnProgressUpdated(shouldShowProgress = true))
                     },
                     onSuccess = {
-                        newsItemEvent(NewsItemEvent.OnProgressUpdated(shouldShow = false))
+                        newsItemEvent(NewsItemEvent.OnProgressUpdated(shouldShowProgress = false))
                     },
                     onError = {
-                        newsItemEvent(NewsItemEvent.OnProgressUpdated(shouldShow = false))
+                        newsItemEvent(NewsItemEvent.OnProgressUpdated(shouldShowProgress = false))
                     },
                     model = articleModel.urlToImage,
                     contentDescription = null,
@@ -133,22 +138,33 @@ fun NewsItem(
                         .animateContentSize(),
                     style = MaterialTheme.typography.titleMedium,
                     text = articleModel.title,
-                    maxLines = if (showMoreTitleClicked) Int.MAX_VALUE else 1,
+                    maxLines = if (newsItemState.showMoreOrLessTitleText.shouldShowMoreTitle) 1 else Int.MAX_VALUE,
                     overflow = TextOverflow.Ellipsis,
                     onTextLayout = { textLayoutResult ->
-                        shouldShowMoreTitle =
+/*
+                        val shouldShowMoreTitle =
                             textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 1
+                        newsItemEvent(NewsItemEvent.OnShowMoreTitleClicked(shouldShowMoreTitle))
+*/
+                        newsItemEvent(NewsItemEvent.OnShowMoreTitleTextClicked(
+                            newsItemState.showMoreOrLessTitleText.copy(
+                                hasTextOverflow = textLayoutResult.hasVisualOverflow,
+                                lineCount = textLayoutResult.lineCount
+                            )
+                        ))
                     })
 
-                if (shouldShowMoreTitle) {
+                if (newsItemState.showMoreOrLessTitleText.shouldShowMoreTitle) {
                     TextButton(
                         modifier = Modifier.align(Alignment.End),
                         contentPadding = PaddingValues(0.dp),
                         onClick = {
-                            showMoreTitleClicked = !showMoreTitleClicked
+                            val showMoreTitleClicked = !newsItemState.shouldShowMoreTitle
+                            newsItemEvent(NewsItemEvent.OnShowMoreTitleClicked(showMoreTitleClicked))
+                            newsItemEvent(NewsItemEvent.OnShowMoreTitleTextClicked())
                         }) {
                         Text(
-                            text = if (showMoreTitleClicked) "Show less" else "Show more",
+                            text = newsItemState.showMoreOrLessTitleText.text,
                             style = MaterialTheme.typography.labelLarge
                         )
                     }
@@ -248,6 +264,7 @@ fun PreviewNewsItem() {
         ),
             onNewsLinkClicked = ::print,
             newsItemEvent = {},
-            newsItemState = NewsItemState())
+            newsItemState = NewsItemState()
+        )
     }
 }
