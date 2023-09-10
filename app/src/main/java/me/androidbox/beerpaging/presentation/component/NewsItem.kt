@@ -3,6 +3,7 @@ package me.androidbox.beerpaging.presentation.component
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -31,9 +33,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,7 +54,8 @@ import kotlin.random.Random
 @Composable
 fun NewsItem(
     modifier: Modifier = Modifier,
-    articleModel: ArticleModel
+    articleModel: ArticleModel,
+    onNewsLinkClicked: (newsLink: String) -> Unit
 ) {
 
     var shouldShowProgress by remember {
@@ -172,10 +180,21 @@ fun NewsItem(
 
                     Spacer(modifier = Modifier.height(4.dp))
 
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        style = MaterialTheme.typography.labelLarge,
-                        text = articleModel.author)
+                    if (articleModel.author.startsWith("https://")) {
+                        ClickableText(
+                            style = MaterialTheme.typography.labelLarge,
+                            text = AnnotatedString(text = articleModel.author, spanStyle = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline)),
+                            onClick = {
+                                onNewsLinkClicked(articleModel.author)
+                            })
+                    }
+                    else {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            style = MaterialTheme.typography.labelLarge,
+                            text = articleModel.author)
+                    }
 
                     Spacer(modifier = Modifier.height(4.dp))
 
@@ -215,6 +234,7 @@ fun PreviewNewsItem() {
             url = "https://www.cnn.com/2023/08/25/us/maui-wildfires-unaccounted-for-list/index.html",
             sourceName = "CNN",
             sourceId = "CNN source Id"
-        ))
+        ),
+            onNewsLinkClicked = ::print)
     }
 }

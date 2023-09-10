@@ -18,6 +18,7 @@ import me.androidbox.beerpaging.data.newsdatasource.local.entity.ArticleEntity
 import me.androidbox.beerpaging.data.newsdatasource.remote.InterceptorApiKey
 import me.androidbox.beerpaging.data.newsdatasource.remote.NewsApi
 import me.androidbox.beerpaging.data.newsdatasource.remote.NewsRemoteMediator
+import me.androidbox.beerpaging.presentation.NewsApplication
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -87,6 +88,12 @@ fun interface AppModule {
                     newsDatabase.newsDao.articlePagingSource()
                 }
             )
+        }
+
+        @Provides
+        @Singleton
+        fun provideApplicationContext(@ApplicationContext applicationContext: ApplicationContext): ApplicationContext {
+            return applicationContext as ApplicationContext
         }
     }
 }
