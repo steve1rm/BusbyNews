@@ -82,144 +82,157 @@ fun NewsItem(
             containerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = MaterialTheme.shapes.medium
     ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .padding(end = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)) {
 
-            Box(modifier = Modifier
-                .weight(1F)
-                .clip(RoundedCornerShape(8.dp))) {
-
-                AsyncImage(
-                    error = painterResource(id = R.drawable.back_soon),
+        Box(
+            modifier = Modifier.wrapContentHeight()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(end = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Box(
                     modifier = Modifier
-                        .aspectRatio(2F / 5F, false)
-                        .fillMaxHeight(),
-                    onLoading = {
-                        shouldShowProgress = true
-                    },
-                    onSuccess = {
-                        shouldShowProgress = false
-                    },
-                    onError = {
-                        shouldShowProgress = false
-                    },
-                    model = articleModel.urlToImage,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop)
+                        .weight(1F)
+                        .clip(RoundedCornerShape(8.dp))
+                ) {
+                    AsyncImage(
+                        error = painterResource(id = R.drawable.back_soon),
+                        modifier = Modifier
+                            .aspectRatio(2F / 5F, false)
+                            .fillMaxHeight(),
+                        onLoading = {
+                            shouldShowProgress = true
+                        },
+                        onSuccess = {
+                            shouldShowProgress = false
+                        },
+                        onError = {
+                            shouldShowProgress = false
+                        },
+                        model = articleModel.urlToImage,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
+                    )
 
-                if (shouldShowProgress) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center))
-                }
-            }
-
-            Column(modifier = Modifier
-                .weight(3F)
-                .fillMaxHeight(),
-                verticalArrangement = Arrangement.Bottom)
-            {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .animateContentSize(),
-                    style = MaterialTheme.typography.titleMedium,
-                    text = articleModel.title,
-                    maxLines = if (showMoreTitleClicked) Int.MAX_VALUE else 1,
-                    overflow = TextOverflow.Ellipsis,
-                    onTextLayout = { textLayoutResult ->
-                        shouldShowMoreTitle =
-                            textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 1
-                    })
-
-                if (shouldShowMoreTitle) {
-                    TextButton(
-                        modifier = Modifier.align(Alignment.End),
-                        contentPadding = PaddingValues(0.dp),
-                        onClick = {
-                            showMoreTitleClicked = !showMoreTitleClicked
-                        }) {
-                        Text(
-                            text = if (showMoreTitleClicked) "Show less" else "Show more",
-                            style = MaterialTheme.typography.labelLarge
+                    if (shouldShowProgress) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center)
                         )
                     }
                 }
 
-                Text(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .animateContentSize(
-                            animationSpec = spring(
-                                dampingRatio = Spring.DampingRatioLowBouncy,
-                                stiffness = Spring.StiffnessLow
-                            )
-                        ),
-                    style = MaterialTheme.typography.bodyLarge,
-                    text = articleModel.description,
-                    maxLines = if (showMoreDescriptionClicked) Int.MAX_VALUE else 5,
-                    overflow = TextOverflow.Ellipsis,
-                    onTextLayout = { textLayoutResult ->
-                        shouldShowMoreDescription =
-                            textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 5
-                    })
-
-                if (shouldShowMoreDescription) {
-                    TextButton(
-                        modifier = Modifier.align(Alignment.End),
-                        contentPadding = PaddingValues(horizontal = 0.dp),
-                        onClick = {
-                            showMoreDescriptionClicked = !showMoreDescriptionClicked
-                        }) {
-                        Text(
-                            text = if (showMoreDescriptionClicked) "Show less" else "Show more",
-                            style = MaterialTheme.typography.labelLarge
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                if (articleModel.author.startsWith("https://")) {
-                    ClickableText(
-                        style = MaterialTheme.typography.labelLarge,
-                        text = AnnotatedString(
-                            text = articleModel.author,
-                            spanStyle = SpanStyle(
-                                color = Color.Blue,
-                                textDecoration = TextDecoration.Underline
-                            )
-                        ),
-                        onClick = {
-                            onNewsLinkClicked(articleModel.author)
-                        })
-                } else {
+                        .weight(3F)
+                        .wrapContentHeight()
+                )
+                {
                     Text(
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .animateContentSize(),
+                        style = MaterialTheme.typography.titleMedium,
+                        text = articleModel.title,
+                        maxLines = if (showMoreTitleClicked) Int.MAX_VALUE else 1,
+                        overflow = TextOverflow.Ellipsis,
+                        onTextLayout = { textLayoutResult ->
+                            shouldShowMoreTitle =
+                                textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 1
+                        })
+
+                    if (shouldShowMoreTitle) {
+                        TextButton(
+                            modifier = Modifier.align(Alignment.End),
+                            contentPadding = PaddingValues(0.dp),
+                            onClick = {
+                                showMoreTitleClicked = !showMoreTitleClicked
+                            }) {
+                            Text(
+                                text = if (showMoreTitleClicked) "Show less" else "Show more",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
+                    }
+
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateContentSize(
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioLowBouncy,
+                                    stiffness = Spring.StiffnessLow
+                                )
+                            ),
+                        style = MaterialTheme.typography.bodyLarge,
+                        text = articleModel.description,
+                        maxLines = if (showMoreDescriptionClicked) Int.MAX_VALUE else 5,
+                        overflow = TextOverflow.Ellipsis,
+                        onTextLayout = { textLayoutResult ->
+                            shouldShowMoreDescription =
+                                textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 5
+                        })
+
+                    if (shouldShowMoreDescription) {
+                        TextButton(
+                            modifier = Modifier.align(Alignment.End),
+                            contentPadding = PaddingValues(horizontal = 0.dp),
+                            onClick = {
+                                showMoreDescriptionClicked = !showMoreDescriptionClicked
+                            }) {
+                            Text(
+                                text = if (showMoreDescriptionClicked) "Show less" else "Show more",
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    if (articleModel.author.startsWith("https://")) {
+                        ClickableText(
+                            style = MaterialTheme.typography.labelLarge,
+                            text = AnnotatedString(
+                                text = articleModel.author,
+                                spanStyle = SpanStyle(
+                                    color = Color.Blue,
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            ),
+                            onClick = {
+                                onNewsLinkClicked(articleModel.author)
+                            })
+                    } else {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            style = MaterialTheme.typography.labelLarge,
+                            text = articleModel.author
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
                         style = MaterialTheme.typography.labelLarge,
-                        text = articleModel.author
+                        text = articleModel.sourceName
                     )
+
+                    Spacer(modifier = Modifier.height(18.dp))
                 }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    style = MaterialTheme.typography.labelLarge,
-                    text = articleModel.sourceName
-                )
-
-                Text(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    text = ZonedDateTime.parse(articleModel.publishedAt).toLocalDate().toString(),
-                    style = MaterialTheme.typography.labelMedium,
-                    textAlign = TextAlign.End
-                )
             }
+
+            Text(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd).padding(bottom = 4.dp, end = 8.dp),
+                text = ZonedDateTime.parse(articleModel.publishedAt).toLocalDate()
+                    .toString(),
+                style = MaterialTheme.typography.labelMedium,
+                textAlign = TextAlign.End
+            )
         }
     }
 }
