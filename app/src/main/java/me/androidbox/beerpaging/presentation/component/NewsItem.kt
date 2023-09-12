@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,6 +44,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import me.androidbox.beerpaging.R
 import me.androidbox.beerpaging.domain.ArticleModel
+import me.androidbox.beerpaging.presentation.screen.NewsItemEvent
+import me.androidbox.beerpaging.presentation.screen.NewsItemState
 import me.androidbox.beerpaging.presentation.theme.BeerPagingTheme
 import java.time.ZonedDateTime
 import kotlin.random.Random
@@ -53,20 +54,27 @@ import kotlin.random.Random
 fun NewsItem(
     modifier: Modifier = Modifier,
     articleModel: ArticleModel,
-    onNewsLinkClicked: (newsLink: String) -> Unit
+    onNewsLinkClicked: (newsLink: String) -> Unit,
+    newsItemEvent: (NewsItemEvent) -> Unit,
+    newsItemState: NewsItemState
 ) {
 
+/*
     var shouldShowProgress by remember {
         mutableStateOf(false)
     }
-
+*/
+/*
     var showMoreTitleClicked by remember {
         mutableStateOf(false)
     }
+*/
 
+/*
     var shouldShowMoreTitle by remember {
         mutableStateOf(false)
     }
+*/
 
     var showMoreDescriptionClicked by remember {
         mutableStateOf(false)
@@ -104,58 +112,67 @@ fun NewsItem(
                             .aspectRatio(2F / 5F, false)
                             .fillMaxHeight(),
                         onLoading = {
-                            shouldShowProgress = true
+                            newsItemEvent(NewsItemEvent.OnProgressUpdated(shouldShowProgress = true))
                         },
                         onSuccess = {
-                            shouldShowProgress = false
+                            newsItemEvent(NewsItemEvent.OnProgressUpdated(shouldShowProgress = false))
                         },
                         onError = {
-                            shouldShowProgress = false
+                            newsItemEvent(NewsItemEvent.OnProgressUpdated(shouldShowProgress = false))
                         },
                         model = articleModel.urlToImage,
                         contentDescription = null,
                         contentScale = ContentScale.Crop
                     )
 
-                    if (shouldShowProgress) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.align(Alignment.Center)
+                if (newsItemState.shouldShowProgress) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center))
+                }
+            }
+
+            Column(modifier = Modifier
+                .weight(3F)
+                .fillMaxHeight(),
+                verticalArrangement = Arrangement.Bottom)
+            {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateContentSize(),
+                    style = MaterialTheme.typography.titleMedium,
+                    text = articleModel.title,
+                    maxLines = if (newsItemState.showMoreOrLessTitleText.shouldShowMoreTitle) 1 else Int.MAX_VALUE,
+                    overflow = TextOverflow.Ellipsis,
+                    onTextLayout = { textLayoutResult ->
+/*
+                        val shouldShowMoreTitle =
+                            textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 1
+                        newsItemEvent(NewsItemEvent.OnShowMoreTitleClicked(shouldShowMoreTitle))
+*/
+                        newsItemEvent(NewsItemEvent.OnShowMoreTitleTextClicked(
+                            newsItemState.showMoreOrLessTitleText.copy(
+                                hasTextOverflow = textLayoutResult.hasVisualOverflow,
+                                lineCount = textLayoutResult.lineCount
+                            )
+                        ))
+                    })
+
+                if (newsItemState.showMoreOrLessTitleText.shouldShowMoreTitle) {
+                    TextButton(
+                        modifier = Modifier.align(Alignment.End),
+                        contentPadding = PaddingValues(0.dp),
+                        onClick = {
+                            val showMoreTitleClicked = !newsItemState.shouldShowMoreTitle
+                            newsItemEvent(NewsItemEvent.OnShowMoreTitleClicked(showMoreTitleClicked))
+                            newsItemEvent(NewsItemEvent.OnShowMoreTitleTextClicked())
+                        }) {
+                        Text(
+                            text = newsItemState.showMoreOrLessTitleText.text,
+                            style = MaterialTheme.typography.labelLarge
                         )
                     }
                 }
-
-                Column(
-                    modifier = Modifier
-                        .weight(3F)
-                        .wrapContentHeight()
-                )
-                {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .animateContentSize(),
-                        style = MaterialTheme.typography.titleMedium,
-                        text = articleModel.title,
-                        maxLines = if (showMoreTitleClicked) Int.MAX_VALUE else 1,
-                        overflow = TextOverflow.Ellipsis,
-                        onTextLayout = { textLayoutResult ->
-                            shouldShowMoreTitle =
-                                textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 1
-                        })
-
-                    if (shouldShowMoreTitle) {
-                        TextButton(
-                            modifier = Modifier.align(Alignment.End),
-                            contentPadding = PaddingValues(0.dp),
-                            onClick = {
-                                showMoreTitleClicked = !showMoreTitleClicked
-                            }) {
-                            Text(
-                                text = if (showMoreTitleClicked) "Show less" else "Show more",
-                                style = MaterialTheme.typography.labelLarge
-                            )
-                        }
-                    }
 
                     Text(
                         modifier = Modifier
@@ -253,6 +270,9 @@ fun PreviewNewsItem() {
             sourceName = "CNN",
             sourceId = "CNN source Id"
         ),
-            onNewsLinkClicked = ::print)
+            onNewsLinkClicked = ::print,
+            newsItemEvent = {},
+            newsItemState = NewsItemState()
+        )
     }
 }

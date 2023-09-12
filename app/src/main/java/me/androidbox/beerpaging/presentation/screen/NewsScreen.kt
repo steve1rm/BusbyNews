@@ -49,7 +49,9 @@ fun NewsScreen(
         modifier: Modifier = Modifier,
         topAppBarScrollBehavior: TopAppBarScrollBehavior,
         onNewsLinkedClicked: (newsLink: String) -> Unit,
-        application: NewsApplication
+        application: NewsApplication,
+        newsItemEvent: (NewsItemEvent) -> Unit,
+        newsItemState: NewsItemState
 ) {
 
     val context = LocalContext.current
@@ -102,7 +104,9 @@ fun NewsScreen(
         NewsItemItems(
             paddingValues = paddingValues,
             newsPagingData = newsPagingData,
-            onNewsLinkedClicked = onNewsLinkedClicked
+            onNewsLinkedClicked = onNewsLinkedClicked,
+            newsItemEvent = newsItemEvent,
+            newsItemState = newsItemState
         )
     }
 }
@@ -111,7 +115,10 @@ fun NewsScreen(
 fun NewsItemItems(
     paddingValues: PaddingValues,
     newsPagingData: LazyPagingItems<ArticleModel>,
-    onNewsLinkedClicked: (newsLink: String) -> Unit
+    onNewsLinkedClicked: (newsLink: String) -> Unit,
+    newsItemEvent: (NewsItemEvent) -> Unit,
+    newsItemState: NewsItemState
+
 ) {
     Box(
         modifier = Modifier
@@ -135,7 +142,12 @@ fun NewsItemItems(
                     },
                     items = newsPagingData.itemSnapshotList.items
                 ) { articleModel ->
-                    NewsItem(articleModel = articleModel, onNewsLinkClicked = onNewsLinkedClicked)
+                    NewsItem(
+                        articleModel = articleModel,
+                        onNewsLinkClicked = onNewsLinkedClicked,
+                        newsItemEvent = newsItemEvent,
+                        newsItemState = newsItemState
+                    )
                 }
 
                 /* Item to show progress when scrolling and is fetching */
