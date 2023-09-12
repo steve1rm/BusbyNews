@@ -133,8 +133,7 @@ fun NewsItem(
 
             Column(modifier = Modifier
                 .weight(3F)
-                .fillMaxHeight(),
-                verticalArrangement = Arrangement.Bottom)
+                .fillMaxHeight())
             {
                 Text(
                     modifier = Modifier
@@ -208,7 +207,7 @@ fun NewsItem(
 
                     Spacer(modifier = Modifier.height(4.dp))
 
-                    if (articleModel.author.startsWith("https://")) {
+                    if (articleModel.author.isUrl()) {
                         ClickableText(
                             style = MaterialTheme.typography.labelLarge,
                             text = AnnotatedString(
@@ -252,6 +251,10 @@ fun NewsItem(
             )
         }
     }
+}
+
+fun String.isUrl(): Boolean {
+    return this.matches(Regex("(http|https)://[\\w\\-_.]+\\.[a-z]{2,6}"))
 }
 
 @Preview(showBackground = true)
