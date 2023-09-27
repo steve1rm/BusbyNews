@@ -8,11 +8,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults.enterAlwaysScrollBehavior
 import androidx.compose.runtime.Composable
@@ -23,16 +20,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.compose.rememberNavController
 import androidx.paging.compose.collectAsLazyPagingItems
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import me.androidbox.beerpaging.presentation.screen.NewsScreen
 import me.androidbox.beerpaging.presentation.theme.BeerPagingTheme
 import me.androidbox.beerpaging.presentation.viewmodel.NewsViewModel
@@ -52,9 +43,22 @@ class MainActivity : ComponentActivity() {
             val newsViewModel: NewsViewModel = hiltViewModel()
             val newsHeadLines = newsViewModel.newsPager.collectAsLazyPagingItems()
             val newsItemState by newsViewModel.newsItemState.collectAsState()
+            val theme = newsApplication.appTheme.collectAsState()
+
+            val useDarkColors = when(theme.value) {
+                AppTheme.MODE_DAY -> {
+                    false
+                }
+                AppTheme.MODE_NIGHT -> {
+                    true
+                }
+                AppTheme.MODE_AUTO -> {
+                    isSystemInDarkTheme()
+                }
+            }
 
             BeerPagingTheme(
-                darkTheme = newsApplication.isDarkMode
+                darkTheme = useDarkColors
             ) {
                 // A surface container using the 'background' color from the theme
                 val scrollBehavior = enterAlwaysScrollBehavior()
@@ -76,10 +80,13 @@ class MainActivity : ComponentActivity() {
                             onNewsLinkedClicked = { newsLink ->
                                 newsLinkState = newsLink
                             },
-                            application = newsApplication,
                             newsItemState = newsItemState,
                             newsItemEvent = { newsItemEvent ->
                                 newsViewModel.onNewsItemEvent(newsItemEvent)
+                            },
+                            selectedTheme = useDarkColors,
+                            onSelectedTheme = { appTheme ->
+                                newsApplication.toggleDarkThemeOff(appTheme)
                             }
                         )
                     }

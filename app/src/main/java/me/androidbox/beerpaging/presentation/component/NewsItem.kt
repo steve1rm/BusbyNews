@@ -59,22 +59,13 @@ fun NewsItem(
     newsItemState: NewsItemState
 ) {
 
-/*
-    var shouldShowProgress by remember {
-        mutableStateOf(false)
-    }
-*/
-/*
     var showMoreTitleClicked by remember {
         mutableStateOf(false)
     }
-*/
 
-/*
     var shouldShowMoreTitle by remember {
         mutableStateOf(false)
     }
-*/
 
     var showMoreDescriptionClicked by remember {
         mutableStateOf(false)
@@ -141,33 +132,35 @@ fun NewsItem(
                         .animateContentSize(),
                     style = MaterialTheme.typography.titleMedium,
                     text = articleModel.title,
-                    maxLines = if (newsItemState.showMoreOrLessTitleText.shouldShowMoreTitle) 1 else Int.MAX_VALUE,
+                    maxLines =  if (showMoreTitleClicked) Int.MAX_VALUE else 1,
                     overflow = TextOverflow.Ellipsis,
                     onTextLayout = { textLayoutResult ->
-/*
-                        val shouldShowMoreTitle =
+                        shouldShowMoreTitle =
                             textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 1
+/*
                         newsItemEvent(NewsItemEvent.OnShowMoreTitleClicked(shouldShowMoreTitle))
-*/
+
                         newsItemEvent(NewsItemEvent.OnShowMoreTitleTextClicked(
                             newsItemState.showMoreOrLessTitleText.copy(
                                 hasTextOverflow = textLayoutResult.hasVisualOverflow,
                                 lineCount = textLayoutResult.lineCount
                             )
-                        ))
+                        ))*/
                     })
 
-                if (newsItemState.showMoreOrLessTitleText.shouldShowMoreTitle) {
+                if (shouldShowMoreTitle) {
                     TextButton(
                         modifier = Modifier.align(Alignment.End),
                         contentPadding = PaddingValues(0.dp),
                         onClick = {
-                            val showMoreTitleClicked = !newsItemState.shouldShowMoreTitle
+                            showMoreTitleClicked = !showMoreTitleClicked
+/*
                             newsItemEvent(NewsItemEvent.OnShowMoreTitleClicked(showMoreTitleClicked))
                             newsItemEvent(NewsItemEvent.OnShowMoreTitleTextClicked())
+*/
                         }) {
                         Text(
-                            text = newsItemState.showMoreOrLessTitleText.text,
+                            text = if (showMoreTitleClicked) "Show less" else "Show more",
                             style = MaterialTheme.typography.labelLarge
                         )
                     }

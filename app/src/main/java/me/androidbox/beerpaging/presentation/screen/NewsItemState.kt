@@ -7,8 +7,11 @@ data class NewsItemState(
     val shouldShowMoreTitle: Boolean = true,
     val shouldMoreDescriptionClicked: Boolean = false,
     val shouldShowMoreDescription: Boolean = false,
+    val isDarkThemeSelected: Boolean = false
 )
 
+
+/** Work in-progress*/
 data class ShowMoreOrLessTitleText(
     var text: String = "Show more",
     var shouldShowMoreTitle: Boolean = false,

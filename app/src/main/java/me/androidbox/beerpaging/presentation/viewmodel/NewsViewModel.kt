@@ -62,6 +62,13 @@ class NewsViewModel @Inject constructor(
                 }
             }
 
+            is NewsItemEvent.OnDarkThemeSelected -> {
+                _newsItemState.update { newsItemState ->
+                    newsItemState.copy(isDarkThemeSelected = newsItemEvent.isDarkTheme)
+                }
+            }
+
+            /* work in progress */
             is NewsItemEvent.OnShowMoreTitleClicked -> {
 /*
                 _newsItemState.update { newsItemState ->

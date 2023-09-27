@@ -13,13 +13,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Brightness2
 import androidx.compose.material.icons.filled.Brightness5
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.NightsStay
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -33,11 +41,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import me.androidbox.beerpaging.domain.ArticleModel
+import me.androidbox.beerpaging.presentation.AppTheme
 import me.androidbox.beerpaging.presentation.NewsApplication
 import me.androidbox.beerpaging.presentation.component.NewsItem
 import me.androidbox.beerpaging.presentation.theme.BeerPagingTheme
@@ -49,9 +59,10 @@ fun NewsScreen(
         modifier: Modifier = Modifier,
         topAppBarScrollBehavior: TopAppBarScrollBehavior,
         onNewsLinkedClicked: (newsLink: String) -> Unit,
-        application: NewsApplication,
         newsItemEvent: (NewsItemEvent) -> Unit,
-        newsItemState: NewsItemState
+        newsItemState: NewsItemState,
+        selectedTheme: Boolean,
+        onSelectedTheme: (selectedTheme: AppTheme) -> Unit
 ) {
 
     val context = LocalContext.current
@@ -66,9 +77,11 @@ fun NewsScreen(
         }
     }
 
-    var isDarkModeState by remember {
-        mutableStateOf(application.isDarkMode)
+    /*
+    var isSwitchOn by remember(selectedTheme) {
+        mutableStateOf(selectedTheme)
     }
+*/
 
     Scaffold(
         modifier = modifier,
@@ -87,18 +100,31 @@ fun NewsScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = {
-                        application.toggleDarkThemeOff()
-                        isDarkModeState = application.isDarkMode
+                    Switch(
+                        modifier = Modifier.padding(end = 16.dp),
+                        checked = newsItemState.isDarkThemeSelected,
+                        onCheckedChange = { isChecked ->
+                            if(isChecked) {
+                                onSelectedTheme(AppTheme.MODE_NIGHT)
+                            }
+                            else {
+                                onSelectedTheme(AppTheme.MODE_DAY)
+                            }
+                            newsItemEvent(NewsItemEvent.OnDarkThemeSelected(isDarkTheme = isChecked))
+                        },
+                        thumbContent = {
+                            Icon(
+                                imageVector = if (newsItemState.isDarkThemeSelected) {
+                                    Icons.Default.Check
+                                } else {
+                                    Icons.Default.Close
+                                },
+                                contentDescription = null
+                            )
+                        })
+                }
 
-                    }) {
-                        Icon(imageVector = if(isDarkModeState)
-                            Icons.Default.Brightness5
-                        else
-                            Icons.Default.Brightness2,
-                            contentDescription = null)
-                    }
-                })
+            )
         }
     ) { paddingValues ->
         NewsItemItems(
