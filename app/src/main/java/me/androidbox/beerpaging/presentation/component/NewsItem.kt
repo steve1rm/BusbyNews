@@ -17,9 +17,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -56,7 +59,8 @@ fun NewsItem(
     articleModel: ArticleModel,
     onNewsLinkClicked: (newsLink: String) -> Unit,
     newsItemEvent: (NewsItemEvent) -> Unit,
-    newsItemState: NewsItemState
+    newsItemState: NewsItemState,
+    titleTextLayoutResult: (hasVisualOverflow: Boolean, lineCount: Int) -> Boolean
 ) {
 
     var showMoreTitleClicked by remember {
@@ -130,13 +134,13 @@ fun NewsItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .animateContentSize(),
+                        color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.titleMedium,
                     text = articleModel.title,
                     maxLines =  if (showMoreTitleClicked) Int.MAX_VALUE else 1,
                     overflow = TextOverflow.Ellipsis,
                     onTextLayout = { textLayoutResult ->
-                        shouldShowMoreTitle =
-                            textLayoutResult.hasVisualOverflow || textLayoutResult.lineCount > 1
+                        shouldShowMoreTitle =  titleTextLayoutResult(textLayoutResult.hasVisualOverflow, textLayoutResult.lineCount)
 /*
                         newsItemEvent(NewsItemEvent.OnShowMoreTitleClicked(shouldShowMoreTitle))
 
@@ -161,7 +165,8 @@ fun NewsItem(
                         }) {
                         Text(
                             text = if (showMoreTitleClicked) "Show less" else "Show more",
-                            style = MaterialTheme.typography.labelLarge
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
@@ -175,6 +180,7 @@ fun NewsItem(
                                     stiffness = Spring.StiffnessLow
                                 )
                             ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodyLarge,
                         text = articleModel.description,
                         maxLines = if (showMoreDescriptionClicked) Int.MAX_VALUE else 5,
@@ -193,8 +199,8 @@ fun NewsItem(
                             }) {
                             Text(
                                 text = if (showMoreDescriptionClicked) "Show less" else "Show more",
-                                style = MaterialTheme.typography.labelLarge
-                            )
+                                style = MaterialTheme.typography.labelLarge,
+                                color = MaterialTheme.colorScheme.onSurface)
                         }
                     }
 
@@ -268,7 +274,8 @@ fun PreviewNewsItem() {
         ),
             onNewsLinkClicked = ::print,
             newsItemEvent = {},
-            newsItemState = NewsItemState()
+            newsItemState = NewsItemState(),
+            titleTextLayoutResult = { _, _, -> true}
         )
     }
 }

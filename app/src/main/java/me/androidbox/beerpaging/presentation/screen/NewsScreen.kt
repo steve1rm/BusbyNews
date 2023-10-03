@@ -172,7 +172,8 @@ fun NewsItemItems(
                         articleModel = articleModel,
                         onNewsLinkClicked = onNewsLinkedClicked,
                         newsItemEvent = newsItemEvent,
-                        newsItemState = newsItemState
+                        newsItemState = newsItemState,
+                        titleTextLayoutResult = ::getTextLayoutResult
                     )
                 }
 
@@ -188,6 +189,10 @@ fun NewsItemItems(
             }
         }
     }
+}
+
+private fun getTextLayoutResult(hasVisualOverflow: Boolean, lineCount: Int): Boolean {
+    return hasVisualOverflow || lineCount > 1
 }
 
 @Preview(showBackground = true)
