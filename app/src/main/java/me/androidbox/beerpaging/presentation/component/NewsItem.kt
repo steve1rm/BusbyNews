@@ -17,12 +17,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -49,7 +46,7 @@ import me.androidbox.beerpaging.R
 import me.androidbox.beerpaging.domain.ArticleModel
 import me.androidbox.beerpaging.presentation.screen.NewsItemEvent
 import me.androidbox.beerpaging.presentation.screen.NewsItemState
-import me.androidbox.beerpaging.presentation.theme.BeerPagingTheme
+import me.androidbox.beerpaging.presentation.theme.BusbyNewsTheme
 import java.time.ZonedDateTime
 import kotlin.random.Random
 
@@ -259,7 +256,7 @@ fun String.isUrl(): Boolean {
 @Preview(showBackground = true)
 @Composable
 fun PreviewNewsItem() {
-    BeerPagingTheme {
+    BusbyNewsTheme {
         NewsItem(articleModel = ArticleModel(
             id = Random.nextInt(),
             author = "Michelle Watson",
