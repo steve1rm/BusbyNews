@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import me.androidbox.beerpaging.domain.ArticleModel
+import me.androidbox.beerpaging.presentation.screen.NewsDetailScreen
 import me.androidbox.beerpaging.presentation.screen.NewsItemEvent
 import me.androidbox.beerpaging.presentation.screen.NewsItemState
 import me.androidbox.beerpaging.presentation.screen.NewsScreen
@@ -122,9 +123,7 @@ fun BusbyNewsApp(
                                 contentDescription = null
                             )
                         })
-                }
-
-            )
+                })
         },
         bottomBar = {
             NavigationBar {
@@ -165,6 +164,15 @@ fun BusbyNewsApp(
             }
         }
     ) { paddingValues ->
+
+        if(newsPagingData.itemCount > 0) {
+            NewsDetailScreen(
+                modifier = Modifier
+                    .padding(paddingValues),
+                listOfArticle = newsPagingData.itemSnapshotList.items
+            )
+        }
+/*
         NewsScreen(
             newsPagingData = newsPagingData,
             modifier = Modifier
@@ -182,6 +190,7 @@ fun BusbyNewsApp(
                 //    newsApplication.toggleDarkThemeOff(appTheme)
             }
         )
+*/
     }
 }
 
