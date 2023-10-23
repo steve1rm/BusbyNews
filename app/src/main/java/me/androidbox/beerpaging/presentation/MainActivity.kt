@@ -32,12 +32,11 @@ class MainActivity : ComponentActivity() {
 
  //   @Inject
     lateinit var newsApplication: NewsApplication
-
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
+/*
             newsApplication = application as NewsApplication
             val newsViewModel: NewsViewModel = hiltViewModel()
             val newsHeadLines = newsViewModel.newsPager.collectAsLazyPagingItems()
@@ -60,55 +59,34 @@ class MainActivity : ComponentActivity() {
                     isSystemInDarkTheme()
                 }
             }
+*/
 
             BusbyNewsTheme {
-                Surface(tonalElevation = 5.dp) {
-                    if(newsLinkState.isBlank()) {
-                        BusbyNewsApp(
-                            newsPagingData = newsHeadLines,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .nestedScroll(connection = scrollBehavior.nestedScrollConnection),
-                            topAppBarScrollBehavior = scrollBehavior,
-                            onNewsLinkedClicked = { newsLink ->
-                                newsLinkState = newsLink
-                            },
-                            newsItemState = newsItemState,
-                            newsItemEvent = { newsItemEvent ->
-                                newsViewModel.onNewsItemEvent(newsItemEvent)
-                            },
-                            selectedTheme = useDarkColors,
-                            onSelectedTheme = { appTheme ->
-                                newsApplication.toggleDarkThemeOff(appTheme)
-                            }
-                        )
-                    }
-                    else {
-                        WebViewScreen(webLink = newsLinkState)
-                        newsLinkState = ""
-                    }
-                }
+           //     Surface(tonalElevation = 5.dp) {
+                    BusbyNewsApp(
+/*
+                        newsPagingData = newsHeadLines,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .nestedScroll(connection = scrollBehavior.nestedScrollConnection),
+                        topAppBarScrollBehavior = scrollBehavior,
+                        onNewsLinkedClicked = { newsLink ->
+                            newsLinkState = newsLink
+                        },
+                        newsItemState = newsItemState,
+                        newsItemEvent = { newsItemEvent ->
+                            newsViewModel.onNewsItemEvent(newsItemEvent)
+                        },
+                        selectedTheme = useDarkColors,
+                        onSelectedTheme = { appTheme ->
+                            newsApplication.toggleDarkThemeOff(appTheme)
+                        }
+*/
+                    )
+  //              }
             }
         }
     }
-}
-
-@Composable
-fun WebViewScreen(webLink: String) {
-    AndroidView(
-        factory = { context ->
-
-            WebView(context).apply {
-                this.layoutParams = ViewGroup.LayoutParams(
-                    LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT)
-
-                loadUrl(webLink)
-            } },
-        update = { webView ->
-            webView.loadUrl(webLink)
-        },
-        modifier = Modifier.fillMaxSize())
 }
 
 data class Config(val id: Int)

@@ -32,12 +32,12 @@ import me.androidbox.beerpaging.presentation.theme.BusbyNewsTheme
 fun NewsScreen(
         newsPagingData: LazyPagingItems<ArticleModel>,
         modifier: Modifier = Modifier,
-        topAppBarScrollBehavior: TopAppBarScrollBehavior,
+ //       topAppBarScrollBehavior: TopAppBarScrollBehavior,
         onNewsLinkedClicked: (newsLink: String) -> Unit,
         newsItemEvent: (NewsItemEvent) -> Unit,
         newsItemState: NewsItemState,
-        selectedTheme: Boolean,
-        onSelectedTheme: (selectedTheme: AppTheme) -> Unit
+/*        selectedTheme: Boolean,
+        onSelectedTheme: (selectedTheme: AppTheme) -> Unit*/
 ) {
 
     val context = LocalContext.current

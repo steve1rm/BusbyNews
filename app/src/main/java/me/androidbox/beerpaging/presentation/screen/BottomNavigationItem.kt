@@ -8,6 +8,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
+import me.androidbox.beerpaging.presentation.navigation.Screens
 
 data class BottomNavigationItem(
     val title: String,
@@ -17,23 +18,28 @@ data class BottomNavigationItem(
     val infoCount: Int? = null
 )
 
+enum class NavigationType(val type: String, val screen: String) {
+    HOME("Home", Screens.NewsScreen.route),
+    NEWS("News", Screens.NewsDetailScreen.route),
+    SETTINGS("Settings", Screens.WebNewsScreen.route)
+}
 
 val listOfNavigationItem = listOf(
     BottomNavigationItem(
-        title = "Home",
+        title = NavigationType.HOME.type,
         selectedIcon = Icons.Filled.Home,
         unSelectedIcon = Icons.Outlined.Home,
         hasInfo = false),
 
     BottomNavigationItem(
-        title = "News",
+        title = NavigationType.NEWS.type,
         selectedIcon = Icons.Filled.Info,
         unSelectedIcon = Icons.Outlined.Info,
         hasInfo = false,
-        infoCount = 45),
+        infoCount = 0),
 
     BottomNavigationItem(
-        title = "Settings",
+        title = NavigationType.SETTINGS.type,
         selectedIcon = Icons.Filled.Settings,
         unSelectedIcon = Icons.Outlined.Settings,
         hasInfo = true))

@@ -1,6 +1,5 @@
 package me.androidbox.beerpaging.presentation
 
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -15,33 +14,33 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarDefaults.enterAlwaysScrollBehavior
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.LazyPagingItems
-import me.androidbox.beerpaging.domain.ArticleModel
-import me.androidbox.beerpaging.presentation.screen.NewsDetailScreen
-import me.androidbox.beerpaging.presentation.screen.NewsItemEvent
-import me.androidbox.beerpaging.presentation.screen.NewsItemState
-import me.androidbox.beerpaging.presentation.screen.NewsScreen
+import androidx.navigation.compose.rememberNavController
+import me.androidbox.beerpaging.presentation.navigation.navigationGraph
+import me.androidbox.beerpaging.presentation.screen.NavigationType
 import me.androidbox.beerpaging.presentation.screen.listOfNavigationItem
 import me.androidbox.beerpaging.presentation.theme.BusbyNewsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BusbyNewsApp(
+
+/*
     newsPagingData: LazyPagingItems<ArticleModel>,
     modifier: Modifier = Modifier,
     topAppBarScrollBehavior: TopAppBarScrollBehavior,
@@ -49,11 +48,12 @@ fun BusbyNewsApp(
     newsItemEvent: (NewsItemEvent) -> Unit,
     newsItemState: NewsItemState,
     selectedTheme: Boolean,
-    onSelectedTheme: (selectedTheme: AppTheme) -> Unit) {
+    onSelectedTheme: (selectedTheme: AppTheme) -> Unit */ ) {
 
-    var selectedNavItem by rememberSaveable() {
+    var selectedNavItem by rememberSaveable {
         mutableIntStateOf(0)
     }
+
     /*
         val useDarkColors = when(theme.value) {
             AppTheme.MODE_DAY -> {
@@ -83,13 +83,23 @@ fun BusbyNewsApp(
             ) {
     */
 
+   // val newsViewModel: NewsViewModel = hiltViewModel()
+   // val newsHeadLines = newsViewModel.newsPager.collectAsLazyPagingItems()
+   // val newsItemState by newsViewModel.newsItemState.collectAsState()
+   // val theme = newsApplication.appTheme.collectAsState()
+
     val scrollBehavior = enterAlwaysScrollBehavior()
+    var newsLinkState by remember {
+        mutableStateOf("")
+    }
+
+    val navHostController = rememberNavController()
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Busby News", style = MaterialTheme.typography.titleLarge) },
-                scrollBehavior = topAppBarScrollBehavior,
+                scrollBehavior = scrollBehavior,
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant,
                     scrolledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -103,19 +113,19 @@ fun BusbyNewsApp(
                 actions = {
                     Switch(
                         modifier = Modifier.padding(end = 16.dp),
-                        checked = newsItemState.isDarkThemeSelected,
+                        checked = true, // newsItemState.isDarkThemeSelected,
                         onCheckedChange = { isChecked ->
-                            if(isChecked) {
-                                onSelectedTheme(AppTheme.MODE_NIGHT)
+                            if (isChecked) {
+                   //             onSelectedTheme(AppTheme.MODE_NIGHT)
                             }
                             else {
-                                onSelectedTheme(AppTheme.MODE_DAY)
+                    //            onSelectedTheme(AppTheme.MODE_DAY)
                             }
-                            newsItemEvent(NewsItemEvent.OnDarkThemeSelected(isDarkTheme = isChecked))
+                            //newsItemEvent(NewsItemEvent.OnDarkThemeSelected(isDarkTheme = isChecked))
                         },
                         thumbContent = {
                             Icon(
-                                imageVector = if (newsItemState.isDarkThemeSelected) {
+                                imageVector = if (true /*newsItemState.isDarkThemeSelected*/) {
                                     Icons.Default.Check
                                 } else {
                                     Icons.Default.Close
@@ -135,7 +145,9 @@ fun BusbyNewsApp(
                                 badge = {
                                     if(item.infoCount != null) {
                                         Badge {
-                                            Text(text = item.infoCount.toString())
+                                            if(item.title == "News") {
+                          //                      Text(text = newsPagingData.itemCount.toString())
+                                            }
                                         }
                                     }
                                     else {
@@ -155,6 +167,7 @@ fun BusbyNewsApp(
                         },
                         onClick = {
                             selectedNavItem = index
+                            navHostController.navigate(NavigationType.entries[selectedNavItem].screen)
                         },
                         label = {
                             Text(text = item.title)
@@ -164,14 +177,20 @@ fun BusbyNewsApp(
             }
         }
     ) { paddingValues ->
-
-        if(newsPagingData.itemCount > 0) {
-            NewsDetailScreen(
-                modifier = Modifier
-                    .padding(paddingValues),
-                listOfArticle = newsPagingData.itemSnapshotList.items
+        Surface(modifier = Modifier.padding(paddingValues)) {
+            navigationGraph(
+                navHostController = navHostController,
+                startDestination = "news"
             )
         }
+
+        /*       if(newsPagingData.itemCount > 0) {
+                   NewsDetailScreen(
+                       modifier = Modifier
+                           .padding(paddingValues),
+                       listOfArticle = newsPagingData.itemSnapshotList.items
+                   )
+               }*/
 /*
         NewsScreen(
             newsPagingData = newsPagingData,
@@ -193,7 +212,6 @@ fun BusbyNewsApp(
 */
     }
 }
-
 
 @Composable
 @Preview
